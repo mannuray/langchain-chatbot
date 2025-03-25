@@ -15,7 +15,7 @@ const Header: React.FC<HeaderProps> = ({ title, subtitle }) => {
       <div className="container flex flex-col items-center justify-center text-center">
         <div className="relative mb-2">
           <span className="chip inline-block rounded-full bg-primary/10 px-3 py-1 text-xs font-medium text-primary">
-            LangChain AI
+            Custom API Integration
           </span>
         </div>
         

@@ -8,8 +8,8 @@ const Index: React.FC = () => {
   return (
     <div className="min-h-screen bg-background pb-10">
       <Header 
-        title="LangChain Chat Assistant" 
-        subtitle="Ask questions and get answers from your AI model through LangChain"
+        title="Custom AI Chat Assistant" 
+        subtitle="Ask questions and get answers with sources from your custom API"
       />
       
       <main className="container mx-auto px-4 py-6">
@@ -27,9 +27,9 @@ const Index: React.FC = () => {
           
           <div className="mt-10 text-center animate-fade-in" style={{ animationDelay: "400ms" }}>
             <p className="text-sm text-muted-foreground">
-              This demo connects to a simulated LangChain model.
+              This chat connects to your custom API at http://localhost:5001/query.
               <br />
-              In a production environment, you would connect to your actual LangChain setup.
+              Make sure your API server is running for this application to work.
             </p>
           </div>
         </div>

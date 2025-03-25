@@ -1,4 +1,3 @@
-
 import React, { useState, useRef, useEffect } from "react";
 import { v4 as uuidv4 } from "uuid";
 import { useToast } from "@/hooks/use-toast";
@@ -15,7 +14,7 @@ const ChatInterface: React.FC = () => {
       {
         id: uuidv4(),
         role: "assistant",
-        content: "Hello! I'm your LangChain AI assistant. How can I help you today?",
+        content: "Hello! I'm your AI assistant. How can I help you today?",
         timestamp: new Date(),
       },
     ],
@@ -50,18 +49,16 @@ const ChatInterface: React.FC = () => {
     }));
 
     try {
-      // Get response from LangChain
-      const response = await queryLangChainModel([
+      // Get response from API
+      const responseMessage = await queryLangChainModel([
         ...chatState.messages,
         userMessage,
       ]);
 
-      // Add assistant response
+      // Add assistant response with ID
       const assistantMessage: Message = {
+        ...responseMessage,
         id: uuidv4(),
-        role: "assistant",
-        content: response,
-        timestamp: new Date(),
       };
 
       setChatState((prev) => ({
@@ -70,7 +67,7 @@ const ChatInterface: React.FC = () => {
         isLoading: false,
       }));
     } catch (error) {
-      console.error("Error querying LangChain model:", error);
+      console.error("Error querying API:", error);
       
       setChatState((prev) => ({
         ...prev,
@@ -133,7 +130,7 @@ const ChatInterface: React.FC = () => {
         <ChatInput
           onSendMessage={handleSendMessage}
           isLoading={chatState.isLoading}
-          placeholder="Ask your LangChain AI assistant..."
+          placeholder="Ask your AI assistant..."
         />
       </div>
     </div>

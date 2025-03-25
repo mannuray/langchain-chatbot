@@ -1,36 +1,54 @@
 
 import { Message } from "../types/chat";
 
-// LangChain integration - this is where you would connect to your actual LangChain
-// model or API. This is just a placeholder implementation.
-export async function queryLangChainModel(messages: Message[]): Promise<string> {
-  // In a real implementation, you would:
-  // 1. Format the messages for your LangChain model/API
-  // 2. Send the request to the LangChain API
-  // 3. Process and return the response
+interface ApiResponse {
+  answer: string;
+  question: string;
+  sources?: {
+    content: string;
+    source: string;
+  }[];
+  time_taken?: string;
+}
+
+// Function to query your API endpoint
+export async function queryLangChainModel(messages: Message[]): Promise<Message> {
+  // Get the last user message
+  const lastMessage = messages.filter(msg => msg.role === "user").pop();
   
-  // For demo purposes, we'll just simulate a delay and return a fake response
-  return new Promise((resolve) => {
-    // Simulate API delay
-    setTimeout(() => {
-      // Generate a fake response based on the last message
-      const lastMessage = messages[messages.length - 1];
-      
-      if (lastMessage.role === "user") {
-        const userQuery = lastMessage.content.toLowerCase();
-        
-        if (userQuery.includes("hello") || userQuery.includes("hi")) {
-          resolve("Hello! How can I assist you today with LangChain?");
-        } else if (userQuery.includes("langchain")) {
-          resolve("LangChain is a framework designed to simplify the creation of applications using large language models. It provides a standard interface for chains, integrations with other tools, and end-to-end chains for common applications.");
-        } else if (userQuery.includes("help")) {
-          resolve("I'm a chat assistant integrated with LangChain. You can ask me questions, and I'll try to provide helpful answers based on my knowledge.");
-        } else {
-          resolve("I'm processing your request through LangChain. In a full implementation, this would connect to your actual model or API to generate a meaningful response.");
-        }
-      } else {
-        resolve("I'm here to help. What would you like to know about LangChain?");
-      }
-    }, 1000); // Simulated 1-second delay
-  });
+  if (!lastMessage) {
+    throw new Error("No user message found");
+  }
+  
+  try {
+    // Make a request to your API endpoint
+    const response = await fetch('http://localhost:5001/query', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        query: lastMessage.content
+      }),
+    });
+    
+    if (!response.ok) {
+      throw new Error(`API request failed with status ${response.status}`);
+    }
+    
+    const data: ApiResponse = await response.json();
+    
+    // Return the response in the format expected by the chat interface
+    return {
+      id: "", // This will be assigned by the chat interface
+      role: "assistant",
+      content: data.answer,
+      timestamp: new Date(),
+      sources: data.sources,
+      timeTaken: data.time_taken
+    };
+  } catch (error) {
+    console.error("Error querying API:", error);
+    throw error;
+  }
 }
