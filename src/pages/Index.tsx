@@ -29,7 +29,11 @@ const Index: React.FC = () => {
             <p className="text-sm text-muted-foreground">
               This chat connects to your custom API at http://localhost:5001/query.
               <br />
-              Make sure your API server is running for this application to work.
+              Make sure your API server is running with CORS enabled for this application to work.
+              <br />
+              <code className="bg-muted p-1 rounded text-xs">
+                Access-Control-Allow-Origin: *
+              </code>
             </p>
           </div>
         </div>

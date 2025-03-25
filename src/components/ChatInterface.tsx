@@ -46,14 +46,19 @@ const ChatInterface: React.FC = () => {
       ...prev,
       messages: [...prev.messages, userMessage],
       isLoading: true,
+      error: null,
     }));
 
     try {
+      console.log("Sending message to API:", content);
+      
       // Get response from API
       const responseMessage = await queryLangChainModel([
         ...chatState.messages,
         userMessage,
       ]);
+
+      console.log("Received response:", responseMessage);
 
       // Add assistant response with ID
       const assistantMessage: Message = {
@@ -69,15 +74,20 @@ const ChatInterface: React.FC = () => {
     } catch (error) {
       console.error("Error querying API:", error);
       
+      const errorMessage = error instanceof Error ? error.message : 'Unknown error';
+      const description = errorMessage.includes("Failed to fetch") 
+        ? "Could not connect to the API. Please ensure your API server is running at http://localhost:5001 and CORS is properly configured."
+        : `Failed to get a response: ${errorMessage}`;
+      
       setChatState((prev) => ({
         ...prev,
         isLoading: false,
-        error: "Failed to get a response. Please try again.",
+        error: description,
       }));
 
       toast({
         title: "Error",
-        description: "Failed to get a response from the AI model. Please try again.",
+        description: description,
         variant: "destructive",
       });
     }
@@ -118,6 +128,15 @@ const ChatInterface: React.FC = () => {
                   <div className="h-2 w-2 rounded-full bg-primary animate-bounce-subtle" style={{ animationDelay: "300ms" }}></div>
                 </div>
               </div>
+            </div>
+          )}
+
+          {chatState.error && (
+            <div className="w-full p-4 bg-destructive/10 text-destructive rounded-lg my-2 text-center">
+              <p>{chatState.error}</p>
+              <p className="text-xs mt-2">
+                Make sure your API is running at <code>http://localhost:5001</code> and accepts CORS requests.
+              </p>
             </div>
           )}
 
