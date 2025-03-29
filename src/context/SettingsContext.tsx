@@ -1,5 +1,6 @@
 
 import React, { createContext, useContext, useState, useEffect } from "react";
+import settings from "@/settings";
 
 type SettingsContextType = {
   apiUrl: string;
@@ -7,7 +8,7 @@ type SettingsContextType = {
 };
 
 const defaultSettings: SettingsContextType = {
-  apiUrl: "http://localhost:5002",
+  apiUrl: settings.apiUrl,
   setApiUrl: () => {},
 };
 

@@ -3,6 +3,7 @@ import React from "react";
 import { cn } from "@/lib/utils";
 import Header from "@/components/Header";
 import ChatInterface from "@/components/ChatInterface";
+import settings from "@/settings";
 
 const Index: React.FC = () => {
   return (
@@ -27,7 +28,7 @@ const Index: React.FC = () => {
           
           <div className="mt-10 text-center animate-fade-in" style={{ animationDelay: "400ms" }}>
             <p className="text-sm text-muted-foreground">
-              This chat connects to your custom API at http://localhost:5001/query.
+              This chat connects to your custom API at {settings.apiUrl}/query.
               <br />
               Make sure your API server is running with CORS enabled for this application to work.
               <br />

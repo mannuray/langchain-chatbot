@@ -1,5 +1,6 @@
 
 import { Message } from "../types/chat";
+import settings from "@/settings";
 
 interface ApiResponse {
   answer: string;
@@ -24,7 +25,7 @@ export async function queryLangChainModel(messages: Message[]): Promise<Message>
     console.log("Sending query to API:", lastMessage.content);
     
     // Make a request to your API endpoint
-    const response = await fetch('http://localhost:5001/query', {
+    const response = await fetch(`${settings.apiUrl}/query`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',

@@ -4,7 +4,7 @@ import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, D
 import { Button } from "@/components/ui/button";
 import { useToast } from "@/hooks/use-toast";
 import { Textarea } from "@/components/ui/textarea";
-import { useSettings } from "@/context/SettingsContext";
+import settings from "@/settings";
 
 interface ExpertAdviceDialogProps {
   isOpen: boolean;
@@ -16,7 +16,7 @@ const ExpertAdviceDialog: React.FC<ExpertAdviceDialogProps> = ({ isOpen, onClose
   const [details, setDetails] = useState("");
   const [isSubmitting, setIsSubmitting] = useState(false);
   const { toast } = useToast();
-  const { apiUrl } = useSettings();
+  const apiUrl = settings.apiUrl;
 
   const handleSubmit = async () => {
     setIsSubmitting(true);
