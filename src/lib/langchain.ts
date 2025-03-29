@@ -32,6 +32,8 @@ export async function queryLangChainModel(messages: Message[]): Promise<Message>
       body: JSON.stringify({
         query: lastMessage.content
       }),
+      // Add cache: 'no-store' to prevent caching which could cause refresh issues
+      cache: 'no-store',
     });
     
     if (!response.ok) {

@@ -1,4 +1,5 @@
-import React, { useState, useRef, useEffect } from "react";
+
+import React, { useState, useRef, useEffect, useCallback } from "react";
 import { v4 as uuidv4 } from "uuid";
 import { useToast } from "@/hooks/use-toast";
 import { cn } from "@/lib/utils";
@@ -31,7 +32,8 @@ const ChatInterface: React.FC = () => {
     }
   }, [chatState.messages]);
 
-  const handleSendMessage = async (content: string) => {
+  // Use useCallback to prevent recreating the function on each render
+  const handleSendMessage = useCallback(async (content: string) => {
     if (chatState.isLoading) return;
 
     // Add user message
@@ -91,7 +93,7 @@ const ChatInterface: React.FC = () => {
         variant: "destructive",
       });
     }
-  };
+  }, [chatState.messages, chatState.isLoading, toast]);
 
   return (
     <div className="flex h-full flex-col overflow-hidden rounded-2xl border bg-card shadow-glass">
