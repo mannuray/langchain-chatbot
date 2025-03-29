@@ -20,9 +20,24 @@ const ExpertAdviceDialog: React.FC<ExpertAdviceDialogProps> = ({ isOpen, onClose
     setIsSubmitting(true);
     
     try {
-      // In a real application, this would send the request to a backend
-      // Mock implementation with a timeout to simulate API call
-      await new Promise(resolve => setTimeout(resolve, 1000));
+      // Make a real API call to the expert advice endpoint
+      const response = await fetch('http://localhost:5002/ask-expert', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          question: details,
+          messageId: messageId
+        }),
+      });
+      
+      if (!response.ok) {
+        throw new Error(`API request failed with status ${response.status}`);
+      }
+      
+      const data = await response.json();
+      console.log("Expert advice response:", data);
       
       toast({
         title: "Expert advice requested",
@@ -31,9 +46,11 @@ const ExpertAdviceDialog: React.FC<ExpertAdviceDialogProps> = ({ isOpen, onClose
       
       onClose();
     } catch (error) {
+      console.error("Error requesting expert advice:", error);
+      
       toast({
         title: "Error",
-        description: "Failed to request expert advice. Please try again.",
+        description: "Failed to request expert advice. Please ensure the API server is running at http://localhost:5002.",
         variant: "destructive",
       });
     } finally {
