@@ -4,6 +4,7 @@ import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, D
 import { Button } from "@/components/ui/button";
 import { useToast } from "@/hooks/use-toast";
 import { Textarea } from "@/components/ui/textarea";
+import { useSettings } from "@/context/SettingsContext";
 
 interface ExpertAdviceDialogProps {
   isOpen: boolean;
@@ -15,13 +16,14 @@ const ExpertAdviceDialog: React.FC<ExpertAdviceDialogProps> = ({ isOpen, onClose
   const [details, setDetails] = useState("");
   const [isSubmitting, setIsSubmitting] = useState(false);
   const { toast } = useToast();
+  const { apiUrl } = useSettings();
 
   const handleSubmit = async () => {
     setIsSubmitting(true);
     
     try {
       // Make a real API call to the expert advice endpoint
-      const response = await fetch('http://localhost:5002/ask-expert', {
+      const response = await fetch(`${apiUrl}/ask-expert`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -50,7 +52,7 @@ const ExpertAdviceDialog: React.FC<ExpertAdviceDialogProps> = ({ isOpen, onClose
       
       toast({
         title: "Error",
-        description: "Failed to request expert advice. Please ensure the API server is running at http://localhost:5002.",
+        description: `Failed to request expert advice. Please ensure the API server is running at ${apiUrl}.`,
         variant: "destructive",
       });
     } finally {

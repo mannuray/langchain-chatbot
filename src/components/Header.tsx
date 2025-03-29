@@ -1,33 +1,53 @@
-
-import React from "react";
+import React, { useState } from "react";
+import { useChat } from "ai/react";
 import { cn } from "@/lib/utils";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { ModeToggle } from "@/components/mode-toggle";
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuSeparator,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
+import { Github, Mail, Moon, Sun } from "lucide-react";
+import { useTheme } from "next-themes";
+import ExpertAdviceDialog from "./ExpertAdviceDialog";
+import { Link } from "react-router-dom";
+import { Settings } from "lucide-react";
 
-interface HeaderProps {
-  title: string;
-  subtitle?: string;
-}
+const Header = () => {
+  const [isExpertAdviceDialogOpen, setIsExpertAdviceDialogOpen] = useState(false);
+  const [messageIdForAdvice, setMessageIdForAdvice] = useState<string | null>(null);
 
-const Header: React.FC<HeaderProps> = ({ title, subtitle }) => {
+  const handleExpertAdviceClick = (messageId: string) => {
+    setMessageIdForAdvice(messageId);
+    setIsExpertAdviceDialogOpen(true);
+  };
+
+  const closeExpertAdviceDialog = () => {
+    setIsExpertAdviceDialogOpen(false);
+    setMessageIdForAdvice(null);
+  };
+
   return (
-    <header className="relative py-6 animate-fade-in">
-      <div className="absolute inset-0 -z-10 bg-gradient-to-b from-secondary/80 to-transparent opacity-40" />
-      
-      <div className="container flex flex-col items-center justify-center text-center">
-        <div className="relative mb-2">
-          <span className="chip inline-block rounded-full bg-primary/10 px-3 py-1 text-xs font-medium text-primary">
-            Custom API Integration
-          </span>
+    <header className="sticky top-0 z-50 w-full border-b bg-background/80 backdrop-blur-sm">
+      <div className="container flex h-14 items-center justify-between">
+        <div className="flex items-center gap-2 font-semibold">
+          AI Chatbot
         </div>
         
-        <h1 className="relative text-3xl font-bold tracking-tight sm:text-4xl">
-          {title}
-        </h1>
-        
-        {subtitle && (
-          <p className="mt-2 max-w-xl text-muted-foreground">
-            {subtitle}
-          </p>
-        )}
+        <div className="flex items-center gap-2">
+          <Link 
+            to="/settings" 
+            className="inline-flex items-center justify-center rounded-md text-sm font-medium transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:opacity-50 disabled:pointer-events-none ring-offset-background bg-secondary text-secondary-foreground hover:bg-secondary/80 h-9 px-3"
+          >
+            <Settings className="h-4 w-4 mr-2" />
+            Settings
+          </Link>
+        </div>
       </div>
     </header>
   );
