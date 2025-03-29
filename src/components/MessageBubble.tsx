@@ -2,14 +2,44 @@
 import React, { useState } from "react";
 import { cn } from "@/lib/utils";
 import { Message } from "@/types/chat";
+import { Button } from "@/components/ui/button";
+import { ThumbsUp, ThumbsDown, HelpCircle } from "lucide-react";
+import ExpertAdviceDialog from "./ExpertAdviceDialog";
+import { useToast } from "@/hooks/use-toast";
 
 interface MessageBubbleProps {
   message: Message;
+  onFeedbackSubmit?: (messageId: string, feedback: "positive" | "negative") => void;
+  onExpertAdviceRequest?: (messageId: string) => void;
 }
 
-const MessageBubble: React.FC<MessageBubbleProps> = ({ message }) => {
+const MessageBubble: React.FC<MessageBubbleProps> = ({ 
+  message, 
+  onFeedbackSubmit,
+  onExpertAdviceRequest
+}) => {
   const isUser = message.role === "user";
   const [showSources, setShowSources] = useState(false);
+  const [showExpertDialog, setShowExpertDialog] = useState(false);
+  const { toast } = useToast();
+  
+  const handleFeedback = (feedback: "positive" | "negative") => {
+    if (message.feedback === feedback) return;
+    
+    if (onFeedbackSubmit) {
+      onFeedbackSubmit(message.id, feedback);
+    }
+    
+    // If no handler provided, we'll still update the UI
+    message.feedback = feedback;
+    
+    toast({
+      title: feedback === "positive" ? "Thank you for your feedback!" : "We're sorry about that",
+      description: feedback === "positive" 
+        ? "We're glad the response was helpful." 
+        : "You can request expert advice for more information.",
+    });
+  };
   
   return (
     <div
@@ -91,6 +121,52 @@ const MessageBubble: React.FC<MessageBubbleProps> = ({ message }) => {
               Response time: {message.timeTaken}
             </div>
           )}
+          
+          {/* Feedback section for assistant messages */}
+          {!isUser && (
+            <div className="mt-4 pt-3 border-t border-muted/30 flex items-center justify-between">
+              <div className="flex items-center gap-2">
+                <span className="text-xs text-muted-foreground">Was this helpful?</span>
+                <Button 
+                  variant="ghost" 
+                  size="sm" 
+                  className={cn(
+                    "p-1 h-auto",
+                    message.feedback === "positive" && "bg-green-100 text-green-700"
+                  )}
+                  onClick={() => handleFeedback("positive")}
+                >
+                  <ThumbsUp className="h-4 w-4" />
+                </Button>
+                <Button 
+                  variant="ghost" 
+                  size="sm" 
+                  className={cn(
+                    "p-1 h-auto",
+                    message.feedback === "negative" && "bg-red-100 text-red-700"
+                  )}
+                  onClick={() => handleFeedback("negative")}
+                >
+                  <ThumbsDown className="h-4 w-4" />
+                </Button>
+              </div>
+              
+              {(message.feedback === "negative" || message.expertAdviceRequested) && (
+                <Button
+                  variant="outline"
+                  size="sm"
+                  className="text-xs"
+                  onClick={() => setShowExpertDialog(true)}
+                  disabled={message.expertAdviceRequested}
+                >
+                  <HelpCircle className="h-3 w-3 mr-1" />
+                  {message.expertAdviceRequested 
+                    ? "Expert advice requested" 
+                    : "Request expert advice"}
+                </Button>
+              )}
+            </div>
+          )}
         </div>
         
         <span
@@ -123,6 +199,13 @@ const MessageBubble: React.FC<MessageBubbleProps> = ({ message }) => {
           </svg>
         </div>
       )}
+      
+      {/* Expert advice dialog */}
+      <ExpertAdviceDialog 
+        isOpen={showExpertDialog} 
+        onClose={() => setShowExpertDialog(false)}
+        messageId={message.id}
+      />
     </div>
   );
 };

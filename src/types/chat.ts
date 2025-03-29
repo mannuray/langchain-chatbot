@@ -13,6 +13,8 @@ export interface Message {
   timestamp: Date;
   sources?: Source[];
   timeTaken?: string;
+  feedback?: "positive" | "negative";
+  expertAdviceRequested?: boolean;
 }
 
 export interface ChatState {

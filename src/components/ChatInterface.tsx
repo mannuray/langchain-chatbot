@@ -95,13 +95,42 @@ const ChatInterface: React.FC = () => {
     }
   }, [chatState.messages, chatState.isLoading, toast]);
 
+  const handleFeedbackSubmit = useCallback((messageId: string, feedback: "positive" | "negative") => {
+    setChatState((prev) => ({
+      ...prev,
+      messages: prev.messages.map((msg) => 
+        msg.id === messageId ? { ...msg, feedback } : msg
+      ),
+    }));
+    
+    // In a real application, you would send this feedback to your API
+    console.log(`Feedback submitted for message ${messageId}: ${feedback}`);
+  }, []);
+
+  const handleExpertAdviceRequest = useCallback((messageId: string) => {
+    setChatState((prev) => ({
+      ...prev,
+      messages: prev.messages.map((msg) => 
+        msg.id === messageId ? { ...msg, expertAdviceRequested: true } : msg
+      ),
+    }));
+    
+    // In a real application, you would send this request to your API
+    console.log(`Expert advice requested for message ${messageId}`);
+  }, []);
+
   return (
     <div className="flex h-full flex-col overflow-hidden rounded-2xl border bg-card shadow-glass">
       {/* Messages container */}
       <div className="flex-1 overflow-y-auto p-4 fade-mask">
         <div className="space-y-1">
           {chatState.messages.map((message) => (
-            <MessageBubble key={message.id} message={message} />
+            <MessageBubble 
+              key={message.id} 
+              message={message} 
+              onFeedbackSubmit={handleFeedbackSubmit}
+              onExpertAdviceRequest={handleExpertAdviceRequest}
+            />
           ))}
 
           {chatState.isLoading && (
