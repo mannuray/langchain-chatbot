@@ -1,37 +1,10 @@
-import React, { useState } from "react";
-import { useChat } from "ai/react";
-import { cn } from "@/lib/utils";
+
+import React from "react";
 import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import { ModeToggle } from "@/components/mode-toggle";
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuSeparator,
-  DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu";
-import { Github, Mail, Moon, Sun } from "lucide-react";
-import { useTheme } from "next-themes";
-import ExpertAdviceDialog from "./ExpertAdviceDialog";
 import { Link } from "react-router-dom";
 import { Settings } from "lucide-react";
 
 const Header = () => {
-  const [isExpertAdviceDialogOpen, setIsExpertAdviceDialogOpen] = useState(false);
-  const [messageIdForAdvice, setMessageIdForAdvice] = useState<string | null>(null);
-
-  const handleExpertAdviceClick = (messageId: string) => {
-    setMessageIdForAdvice(messageId);
-    setIsExpertAdviceDialogOpen(true);
-  };
-
-  const closeExpertAdviceDialog = () => {
-    setIsExpertAdviceDialogOpen(false);
-    setMessageIdForAdvice(null);
-  };
-
   return (
     <header className="sticky top-0 z-50 w-full border-b bg-background/80 backdrop-blur-sm">
       <div className="container flex h-14 items-center justify-between">
