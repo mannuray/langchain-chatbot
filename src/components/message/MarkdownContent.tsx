@@ -1,4 +1,3 @@
-
 import React from "react";
 import ReactMarkdown from "react-markdown";
 import { type Components } from "react-markdown";
@@ -22,7 +21,7 @@ export const MarkdownContent: React.FC<MarkdownContentProps> = ({ content }) => 
     ),
     ul: ({ children, ...props }) => <ul className="list-disc pl-6 my-2" {...props}>{children}</ul>,
     ol: ({ children, ...props }) => <ol className="list-decimal pl-6 my-2" {...props}>{children}</ol>,
-    li: ({ children, ...props }) => <li className="my-1" {...props}>{children}</li>,
+    li: ({ children, ...props }) => <li className="my-1 leading-tight" {...props}>{children}</li>,
     h1: ({ children, ...props }) => <h1 className="text-xl font-bold mt-4 mb-2" {...props}>{children}</h1>,
     h2: ({ children, ...props }) => <h2 className="text-lg font-bold mt-3 mb-2" {...props}>{children}</h2>,
     h3: ({ children, ...props }) => <h3 className="text-md font-bold mt-3 mb-1" {...props}>{children}</h3>,
