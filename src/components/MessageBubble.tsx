@@ -79,32 +79,30 @@ const MessageBubble: React.FC<MessageBubbleProps> = ({
           "transition-all duration-200 ease-in-out hover:shadow-subtle-hover",
         )}
       >
-        <div className="prose prose-sm dark:prose-invert">
-          {isUser ? (
-            <p className="whitespace-pre-wrap">{message.content}</p>
-          ) : (
-            <div className="markdown-content">
-              <MarkdownContent content={message.content} />
-            </div>
-          )}
-          
-          <MessageSources sources={message.sources || []} />
-          
-          {message.timeTaken && (
-            <div className="mt-2 text-xs text-muted-foreground">
-              Response time: {message.timeTaken}
-            </div>
-          )}
-          
-          {!isUser && (
-            <MessageFeedback 
-              feedback={message.feedback}
-              expertAdviceRequested={message.expertAdviceRequested}
-              onFeedback={handleFeedback}
-              onExpertAdvice={() => setShowExpertDialog(true)}
-            />
-          )}
-        </div>
+        {isUser ? (
+          <div className="whitespace-pre-wrap">{message.content}</div>
+        ) : (
+          <div className="markdown-content overflow-hidden">
+            <MarkdownContent content={message.content} />
+          </div>
+        )}
+        
+        <MessageSources sources={message.sources || []} />
+        
+        {message.timeTaken && (
+          <div className="mt-2 text-xs text-muted-foreground">
+            Response time: {message.timeTaken}
+          </div>
+        )}
+        
+        {!isUser && (
+          <MessageFeedback 
+            feedback={message.feedback}
+            expertAdviceRequested={message.expertAdviceRequested}
+            onFeedback={handleFeedback}
+            onExpertAdvice={() => setShowExpertDialog(true)}
+          />
+        )}
         
         <span
           className={cn(

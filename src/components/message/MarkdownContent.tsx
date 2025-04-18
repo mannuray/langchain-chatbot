@@ -20,9 +20,9 @@ export const MarkdownContent: React.FC<MarkdownContentProps> = ({ content }) => 
         ? <code className="text-sm bg-secondary/50 block overflow-x-auto p-2" {...props}>{children}</code>
         : <code className="rounded bg-muted px-1 py-0.5 text-sm font-medium" {...props}>{children}</code>
     ),
-    ul: ({ children, ...props }) => <ul className="list-disc pl-6 my-2" {...props}>{children}</ul>,
-    ol: ({ children, ...props }) => <ol className="list-decimal pl-6 my-2" {...props}>{children}</ol>,
-    li: ({ children, ...props }) => <li className="my-0.5 leading-normal" {...props}>{children}</li>,
+    ul: ({ children, ...props }) => <ul className="list-disc pl-6 my-2 space-y-1" {...props}>{children}</ul>,
+    ol: ({ children, ...props }) => <ol className="list-decimal pl-6 my-2 space-y-1" {...props}>{children}</ol>,
+    li: ({ children, ...props }) => <li className="leading-normal" {...props}>{children}</li>,
     h1: ({ children, ...props }) => <h1 className="text-xl font-bold mt-4 mb-2" {...props}>{children}</h1>,
     h2: ({ children, ...props }) => <h2 className="text-lg font-bold mt-3 mb-2" {...props}>{children}</h2>,
     h3: ({ children, ...props }) => <h3 className="text-md font-bold mt-3 mb-1" {...props}>{children}</h3>,
@@ -41,6 +41,9 @@ export const MarkdownContent: React.FC<MarkdownContentProps> = ({ content }) => 
     tr: ({ children, ...props }) => <tr {...props}>{children}</tr>,
     th: ({ children, ...props }) => <th className="px-3 py-2 text-left text-xs font-medium uppercase tracking-wider" {...props}>{children}</th>,
     td: ({ children, ...props }) => <td className="px-3 py-2 text-sm" {...props}>{children}</td>,
+    hr: ({ ...props }) => <hr className="my-4 border-muted" {...props} />,
+    strong: ({ children, ...props }) => <strong className="font-bold" {...props}>{children}</strong>,
+    em: ({ children, ...props }) => <em className="italic" {...props}>{children}</em>,
   };
 
   return (
