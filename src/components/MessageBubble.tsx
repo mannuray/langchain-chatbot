@@ -72,18 +72,20 @@ const MessageBubble: React.FC<MessageBubbleProps> = ({
 
       <div
         className={cn(
-          "relative max-w-[80%] rounded-2xl px-4 py-3 shadow-glass-soft",
+          "relative max-w-[85%] rounded-2xl px-4 py-3 shadow-glass-soft",
           isUser
-            ? "rounded-tr-sm bg-chat-user"
-            : "rounded-tl-sm bg-chat-assistant",
+            ? "rounded-tr-sm bg-chat-user text-foreground"
+            : "rounded-tl-sm bg-chat-assistant text-foreground",
           "transition-all duration-200 ease-in-out hover:shadow-subtle-hover",
         )}
       >
         <div className="prose prose-sm dark:prose-invert">
           {isUser ? (
-            <p>{message.content}</p>
+            <p className="whitespace-pre-wrap">{message.content}</p>
           ) : (
-            <MarkdownContent content={message.content} />
+            <div className="markdown-content">
+              <MarkdownContent content={message.content} />
+            </div>
           )}
           
           <MessageSources sources={message.sources || []} />
