@@ -2,11 +2,12 @@
 import React, { useState } from "react";
 import { cn } from "@/lib/utils";
 import { Message } from "@/types/chat";
-import { Button } from "@/components/ui/button";
-import { ThumbsUp, ThumbsDown, HelpCircle } from "lucide-react";
-import ExpertAdviceDialog from "./ExpertAdviceDialog";
 import { useToast } from "@/hooks/use-toast";
-import ReactMarkdown from "react-markdown";
+import ExpertAdviceDialog from "./ExpertAdviceDialog";
+import { LoadingIndicator } from "./message/LoadingIndicator";
+import { MessageSources } from "./message/MessageSources";
+import { MessageFeedback } from "./message/MessageFeedback";
+import { MarkdownContent } from "./message/MarkdownContent";
 
 interface MessageBubbleProps {
   message: Message;
@@ -20,7 +21,6 @@ const MessageBubble: React.FC<MessageBubbleProps> = ({
   onExpertAdviceRequest
 }) => {
   const isUser = message.role === "user";
-  const [showSources, setShowSources] = useState(false);
   const [showExpertDialog, setShowExpertDialog] = useState(false);
   const { toast } = useToast();
   
@@ -83,70 +83,10 @@ const MessageBubble: React.FC<MessageBubbleProps> = ({
           {isUser ? (
             <p>{message.content}</p>
           ) : (
-            <ReactMarkdown
-              className="whitespace-pre-wrap break-words"
-              components={{
-                pre: ({ node, ...props }) => (
-                  <div className="overflow-auto rounded-md bg-secondary/50 p-2 my-2">
-                    <pre {...props} />
-                  </div>
-                ),
-                code: ({ node, inline, className, children, ...props }) => (
-                  inline 
-                  ? <code className="rounded bg-muted px-1 py-0.5 text-sm font-medium" {...props}>{children}</code>
-                  : <code className="text-sm bg-secondary/50 block overflow-x-auto p-2" {...props}>{children}</code>
-                ),
-                ul: ({ node, ...props }) => <ul className="list-disc pl-6 my-2" {...props} />,
-                ol: ({ node, ...props }) => <ol className="list-decimal pl-6 my-2" {...props} />,
-                li: ({ node, ...props }) => <li className="my-1" {...props} />,
-                h1: ({ node, ...props }) => <h1 className="text-xl font-bold mt-4 mb-2" {...props} />,
-                h2: ({ node, ...props }) => <h2 className="text-lg font-bold mt-3 mb-2" {...props} />,
-                h3: ({ node, ...props }) => <h3 className="text-md font-bold mt-3 mb-1" {...props} />,
-                p: ({ node, ...props }) => <p className="my-2" {...props} />,
-                a: ({ node, ...props }) => <a className="text-primary underline" {...props} />,
-                blockquote: ({ node, ...props }) => (
-                  <blockquote className="border-l-4 border-muted pl-4 italic my-2" {...props} />
-                ),
-              }}
-            >
-              {message.content}
-            </ReactMarkdown>
+            <MarkdownContent content={message.content} />
           )}
           
-          {message.sources && message.sources.length > 0 && (
-            <div className="mt-3">
-              <button
-                onClick={() => setShowSources(!showSources)}
-                className="text-xs text-primary font-medium flex items-center gap-1"
-              >
-                {showSources ? 'Hide sources' : 'Show sources'}
-                <svg
-                  xmlns="http://www.w3.org/2000/svg"
-                  viewBox="0 0 24 24"
-                  fill="none"
-                  stroke="currentColor"
-                  strokeWidth="2"
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  className={`h-3 w-3 transition-transform ${showSources ? 'rotate-180' : ''}`}
-                >
-                  <polyline points="6 9 12 15 18 9"></polyline>
-                </svg>
-              </button>
-              
-              {showSources && (
-                <div className="mt-2 space-y-2 text-xs bg-muted/30 p-2 rounded-lg">
-                  <h4 className="font-semibold text-xs">Sources:</h4>
-                  {message.sources.map((source, index) => (
-                    <div key={index} className="border-l-2 border-primary/30 pl-2 py-1">
-                      <p className="text-muted-foreground mb-1">{source.content}</p>
-                      <p className="text-xs font-medium">{source.source}</p>
-                    </div>
-                  ))}
-                </div>
-              )}
-            </div>
-          )}
+          <MessageSources sources={message.sources || []} />
           
           {message.timeTaken && (
             <div className="mt-2 text-xs text-muted-foreground">
@@ -154,50 +94,13 @@ const MessageBubble: React.FC<MessageBubbleProps> = ({
             </div>
           )}
           
-          {/* Feedback section for assistant messages */}
           {!isUser && (
-            <div className="mt-4 pt-3 border-t border-muted/30 flex items-center justify-between">
-              <div className="flex items-center gap-2">
-                <span className="text-xs text-muted-foreground">Was this helpful?</span>
-                <Button 
-                  variant="ghost" 
-                  size="sm" 
-                  className={cn(
-                    "p-1 h-auto",
-                    message.feedback === "positive" && "bg-green-100 text-green-700"
-                  )}
-                  onClick={() => handleFeedback("positive")}
-                >
-                  <ThumbsUp className="h-4 w-4" />
-                </Button>
-                <Button 
-                  variant="ghost" 
-                  size="sm" 
-                  className={cn(
-                    "p-1 h-auto",
-                    message.feedback === "negative" && "bg-red-100 text-red-700"
-                  )}
-                  onClick={() => handleFeedback("negative")}
-                >
-                  <ThumbsDown className="h-4 w-4" />
-                </Button>
-              </div>
-              
-              {(message.feedback === "negative" || message.expertAdviceRequested) && (
-                <Button
-                  variant="outline"
-                  size="sm"
-                  className="text-xs"
-                  onClick={() => setShowExpertDialog(true)}
-                  disabled={message.expertAdviceRequested}
-                >
-                  <HelpCircle className="h-3 w-3 mr-1" />
-                  {message.expertAdviceRequested 
-                    ? "Expert advice requested" 
-                    : "Request expert advice"}
-                </Button>
-              )}
-            </div>
+            <MessageFeedback 
+              feedback={message.feedback}
+              expertAdviceRequested={message.expertAdviceRequested}
+              onFeedback={handleFeedback}
+              onExpertAdvice={() => setShowExpertDialog(true)}
+            />
           )}
         </div>
         
@@ -232,7 +135,6 @@ const MessageBubble: React.FC<MessageBubbleProps> = ({
         </div>
       )}
       
-      {/* Expert advice dialog */}
       <ExpertAdviceDialog 
         isOpen={showExpertDialog} 
         onClose={() => setShowExpertDialog(false)}
