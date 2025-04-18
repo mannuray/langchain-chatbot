@@ -6,6 +6,7 @@ import { Button } from "@/components/ui/button";
 import { ThumbsUp, ThumbsDown, HelpCircle } from "lucide-react";
 import ExpertAdviceDialog from "./ExpertAdviceDialog";
 import { useToast } from "@/hooks/use-toast";
+import ReactMarkdown from "react-markdown";
 
 interface MessageBubbleProps {
   message: Message;
@@ -79,7 +80,38 @@ const MessageBubble: React.FC<MessageBubbleProps> = ({
         )}
       >
         <div className="prose prose-sm dark:prose-invert">
-          <p>{message.content}</p>
+          {isUser ? (
+            <p>{message.content}</p>
+          ) : (
+            <ReactMarkdown
+              className="whitespace-pre-wrap break-words"
+              components={{
+                pre: ({ node, ...props }) => (
+                  <div className="overflow-auto rounded-md bg-secondary/50 p-2 my-2">
+                    <pre {...props} />
+                  </div>
+                ),
+                code: ({ node, inline, className, children, ...props }) => (
+                  inline 
+                  ? <code className="rounded bg-muted px-1 py-0.5 text-sm font-medium" {...props}>{children}</code>
+                  : <code className="text-sm bg-secondary/50 block overflow-x-auto p-2" {...props}>{children}</code>
+                ),
+                ul: ({ node, ...props }) => <ul className="list-disc pl-6 my-2" {...props} />,
+                ol: ({ node, ...props }) => <ol className="list-decimal pl-6 my-2" {...props} />,
+                li: ({ node, ...props }) => <li className="my-1" {...props} />,
+                h1: ({ node, ...props }) => <h1 className="text-xl font-bold mt-4 mb-2" {...props} />,
+                h2: ({ node, ...props }) => <h2 className="text-lg font-bold mt-3 mb-2" {...props} />,
+                h3: ({ node, ...props }) => <h3 className="text-md font-bold mt-3 mb-1" {...props} />,
+                p: ({ node, ...props }) => <p className="my-2" {...props} />,
+                a: ({ node, ...props }) => <a className="text-primary underline" {...props} />,
+                blockquote: ({ node, ...props }) => (
+                  <blockquote className="border-l-4 border-muted pl-4 italic my-2" {...props} />
+                ),
+              }}
+            >
+              {message.content}
+            </ReactMarkdown>
+          )}
           
           {message.sources && message.sources.length > 0 && (
             <div className="mt-3">
