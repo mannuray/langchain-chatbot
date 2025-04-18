@@ -1,7 +1,7 @@
 
 import React from "react";
 import ReactMarkdown from "react-markdown";
-import { Components } from "react-markdown/lib/ast-to-react";
+import { type Components } from "react-markdown";
 
 interface MarkdownContentProps {
   content: string;
